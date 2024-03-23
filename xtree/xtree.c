@@ -324,7 +324,7 @@ static inline void xt_replace_left(struct xt_node *n, struct xt_node *l)
  * operation is invoked on the right child of the newly inserted node.
  *
  * Similarly, if the node to be deleted does not have a right child, the
- * replacement process involves utilizing the first node found in the left
+ * replacement process involves utilizing the last node found in the left
  * subtree. Subsequently, an update operation is called on the left child of th
  * replacement node.
  *
