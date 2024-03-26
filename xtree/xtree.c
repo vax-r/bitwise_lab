@@ -159,6 +159,8 @@ static inline void xt_update(struct xt_node **root, struct xt_node *n)
 
     if (b < -1) {
         /* leaning to the right */
+        if (xt_balance(xt_right(n)) > 0)
+            xt_rotate_left(xt_right(n));
         if (n == *root)
             *root = xt_right(n);
         xt_rotate_right(n);
@@ -166,6 +168,8 @@ static inline void xt_update(struct xt_node **root, struct xt_node *n)
 
     else if (b > 1) {
         /* leaning to the left */
+        if (xt_balance(xt_left(n)) < 0)
+            xt_rotate_right(xt_left(n));
         if (n == *root)
             *root = xt_left(n);
         xt_rotate_left(n);
