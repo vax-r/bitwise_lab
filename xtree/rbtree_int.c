@@ -55,3 +55,16 @@ void *rbtree_find(void *ctx, int a)
     struct rb_node *f = rb_find(&a, &tree->root, rbtree_find_cmp);
     return f ? rb_entry(f, struct rbtree_node, node) : NULL;
 }
+
+int rbtree_remove(void *ctx, int a)
+{
+    struct rbtree_head *tree = (struct rbtree_head *) ctx;
+    struct rb_node *r = rb_find(&a, &tree->root, rbtree_find_cmp);
+    if (!r)
+        return -1;
+
+    struct rbtree_node *rn = rb_entry(r, struct rbtree_node, node);
+    rb_erase(r, &tree->root);
+    free(rn);
+    return 0;
+}

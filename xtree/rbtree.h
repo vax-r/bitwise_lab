@@ -12,6 +12,20 @@ struct rb_root {
     struct rb_node *rb_node;
 };
 
+/*
+ * Please note - only struct rb_augment_callbacks and the prototypes for
+ * rb_insert_augmented() and rb_erase_augmented() are intended to be public.
+ * The rest are implementation details you are not expected to depend on.
+ *
+ * See Documentation/core-api/rbtree.rst for documentation and samples.
+ */
+
+struct rb_augment_callbacks {
+    void (*propagate)(struct rb_node *node, struct rb_node *stop);
+    void (*copy)(struct rb_node *old, struct rb_node *new);
+    void (*rotate)(struct rb_node *old, struct rb_node *new);
+};
+
 #define RB_RED 0
 #define RB_BLACK 1
 
@@ -47,11 +61,7 @@ static inline void rb_set_parent(struct rb_node *rb, struct rb_node *p)
 }
 
 extern void rb_insert_color(struct rb_node *, struct rb_root *);
-// extern void rb_erase(struct rb_node *, struct rb_root *);
-
-/* Fast replacement of a single node without remove/rebalance/add/rebalance */
-// extern void rb_replace_node(struct rb_node *victim, struct rb_node *new,
-// 			    struct rb_root *root);
+extern void rb_erase(struct rb_node *, struct rb_root *);
 
 static inline void rb_link_node(struct rb_node *node,
                                 struct rb_node *parent,
