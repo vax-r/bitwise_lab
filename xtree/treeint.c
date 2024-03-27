@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include "common.h"
+#include "rbtree_int.h"
 #include "treeint_xt.h"
 
 struct treeint_ops {
@@ -23,6 +24,12 @@ static struct treeint_ops xt_ops = {
     .insert = treeint_xt_insert,
     .find = treeint_xt_find,
     .remove = treeint_xt_remove,
+};
+
+static struct treeint_ops rb_ops = {
+    .init = rbtree_init,
+    .insert = rbtree_insert,
+    .find = rbtree_find,
 };
 
 #define rand_key(sz) rand() % ((sz) -1)
@@ -91,6 +98,27 @@ int main(int argc, char *argv[])
     printf("\n");
 
     ops->destroy(ctx);
+
+    /* Red-black tree */
+    ops = &rb_ops;
+
+    void *ctx = ops->init();
+
+    for (size_t i = 0; i < tree_size; ++i) {
+        int v = seed ? rand_key(tree_size) : i;
+        long long insert_time = bench(ops->insert(ctx, v));
+        printf("%lld,", insert_time);
+    }
+    printf("\n");
+
+    long long find_time = 0;
+    for (size_t i = 0; i < tree_size; ++i) {
+        int v = seed ? rand_key(tree_size) : i;
+        find_time = bench(ops->find(ctx, v));
+        printf("%lld, ", find_time);
+    }
+    printf("\n");
+
 
     return 0;
 }
