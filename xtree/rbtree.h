@@ -136,3 +136,32 @@ static __always_inline struct rb_node *rb_find(
 
     return NULL;
 }
+
+/**
+ * rb_remove() - remove @key in tree @tree
+ * @key: key to remove
+ * @tree: tree to modify
+ * @less: operator defining the (partial) node order
+ */
+static __always_inline struct rb_node *rb_remove(
+    const void *key,
+    struct rb_root *tree,
+    int (*cmp)(const void *key, const struct rb_node *))
+{
+    struct rb_node *node = tree->rb_node;
+
+    while (node) {
+        int c = cmp(key, node);
+
+        if (c < 0)
+            node = node->rb_left;
+        else if (c > 0)
+            node = node->rb_right;
+        else {
+            rb_erase(node, tree);
+            return node;
+        }
+    }
+
+    return NULL;
+}
